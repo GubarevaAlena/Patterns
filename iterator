@@ -1,0 +1,91 @@
+CoffeeMachine coffeeMachine = new CoffeeMachine(4);
+coffeeMachine.AddCoffeeToOrder(new Coffee("Latte"));
+coffeeMachine.AddCoffeeToOrder(new Coffee("Cappuccino"));
+coffeeMachine.AddCoffeeToOrder(new Coffee("Mocha"));
+coffeeMachine.AddCoffeeToOrder(new Coffee("Espresso"));
+
+IIterator it = coffeeMachine.iterator();
+
+while (it.hasNext())
+{
+    Coffee coffee = (Coffee)it.next();
+    Console.WriteLine(coffee.Name);
+}
+
+Console.ReadKey();
+
+
+interface IAggregate
+{
+    IIterator iterator();
+}
+
+interface IIterator
+{
+    bool hasNext();
+    object next();
+}
+
+class Coffee
+{
+    public string Name { get; }
+
+    public Coffee(string name)
+    {
+        this.Name = name;
+    }
+}
+
+class CoffeeMachine : IAggregate
+{
+    List<Coffee> order;
+
+    public CoffeeMachine(int maxsize)
+    {
+        order = new List<Coffee>();
+    }
+
+    public Coffee? GetCoffeeAt(int index)
+    {
+        return (index < order.Count) ? order[index] : null;
+    }
+
+    public void AddCoffeeToOrder(Coffee coffee)
+    {
+        order.Add(coffee);
+    }
+
+    public int GetLength()
+    {
+        return order.Count;
+    }
+
+    public IIterator iterator()
+    {
+        return new CoffeeMachineIterator(this);
+    }
+}
+
+class CoffeeMachineIterator : IIterator
+{
+    private CoffeeMachine coffeeMachine;
+    private int index;
+
+    public CoffeeMachineIterator(CoffeeMachine coffeeMachine)
+    {
+        this.coffeeMachine = coffeeMachine;
+        this.index = 0;
+    }
+
+    public bool hasNext()
+    {
+        return (index < coffeeMachine.GetLength()) ? true : false;
+    }
+
+    public object next()
+    {
+        Coffee coffee = coffeeMachine.GetCoffeeAt(index);
+        index++;
+        return coffee;
+    }
+}
