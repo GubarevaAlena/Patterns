@@ -1,0 +1,168 @@
+CoffeeMakingStrat cof = new();
+
+Console.WriteLine("~~~Menu~~~\n1. Espressso\n2. Americano\n3. Latte\n4. Cappuccino\n5. Mocha");
+int input = int.Parse(Console.ReadKey().KeyChar.ToString());
+
+switch (input)
+{
+    case 1:
+        cof.SetCoffeeMakerStrat(new Espresso());
+        cof.MakeCoffee();
+        break;
+
+    case 2:
+        cof.SetCoffeeMakerStrat(new Americano());
+        cof.MakeCoffee();
+        break;
+
+    case 3:
+        cof.SetCoffeeMakerStrat(new Latte());
+        cof.MakeCoffee();
+        break;
+    case 4:
+        cof.SetCoffeeMakerStrat(new Cappuccino());
+        cof.MakeCoffee();
+        break;
+    case 5:
+        cof.SetCoffeeMakerStrat(new Mocha());
+        cof.MakeCoffee();
+        break;
+
+    default:
+        Console.WriteLine("\nInvalid Selection!");
+        break;
+}
+
+Console.WriteLine("\n~~~Additions~~~\n1. Syrop\n2. Sugar\n3. Cinnamon\n4. Nothing");
+input = int.Parse(Console.ReadKey().KeyChar.ToString());
+
+switch (input)
+{
+    case 1:
+        cof.SetAddStrat(new Syrop());
+        cof.Add();
+        break;
+
+    case 2:
+        cof.SetAddStrat(new Sugar());
+        cof.Add();
+        break;
+
+    case 3:
+        cof.SetAddStrat(new Cinnamon());
+        cof.Add();
+        break;
+    case 4:
+        Console.WriteLine("\nNothing is nothing :c");
+        break;
+
+    default:
+        Console.WriteLine("\nInvalid Selection!");
+        break;
+}
+
+Console.WriteLine($"\nYour coffee is ready!");
+
+Console.ReadKey();
+
+abstract class СoffeeMaker
+{
+    public abstract void  MakeCoffee();
+}
+
+abstract class Additioner
+{
+    public abstract void Add();
+}
+
+class Espresso : СoffeeMaker
+{
+    public override void MakeCoffee()
+    {
+        Console.WriteLine("\nCoffee Maker is making your espresso ;)");
+    }
+}
+
+
+class Americano : СoffeeMaker
+{
+    public override void MakeCoffee()
+    {
+        Console.WriteLine("\nCoffee Maker is making your americano <3");
+    }
+}
+
+class Latte : СoffeeMaker
+{
+    public override void MakeCoffee()
+    {
+        Console.WriteLine("\nCoffee Maker is making your latte c:");
+    }
+}
+
+class Cappuccino : СoffeeMaker
+{
+    public override void MakeCoffee()
+    {
+        Console.WriteLine("\nCoffee Maker is making your cappuccino ;>");
+    }
+}
+
+class Mocha : СoffeeMaker
+{
+    public override void MakeCoffee()
+    {
+        Console.WriteLine("\nCoffee Maker is making your mocha (:");
+    }
+}
+
+class Syrop : Additioner
+{
+    public override void Add()
+    {
+        Console.WriteLine("\nCoffee Maker added syrop to your coffee");
+    }
+}
+
+class Sugar : Additioner
+{
+    public override void Add()
+    {
+        Console.WriteLine("\nCoffee Maker added sugar to your coffee");
+    }
+}
+
+class Cinnamon : Additioner
+{
+    public override void Add()
+    {
+        Console.WriteLine("\nCoffee Maker added cinnamon to your coffee");
+    }
+}
+
+class CoffeeMakingStrat
+{
+    private СoffeeMaker _coffeeMaker;
+    private Additioner _additioner;
+    public void SetCoffeeMakerStrat(СoffeeMaker coffeeMakerStrat)
+    {
+        this._coffeeMaker = coffeeMakerStrat;
+    }
+
+    public void SetAddStrat(Additioner add)
+    {
+        this._additioner = add;
+    }
+
+    public void MakeCoffee()
+    {
+        _coffeeMaker.MakeCoffee();
+        Console.WriteLine();
+    }
+
+    public void Add()
+    {
+        _additioner.Add();
+        Console.WriteLine();
+    }
+}
