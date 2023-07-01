@@ -1,0 +1,87 @@
+var lib = new Library();
+foreach (var book in lib.GetBook())
+{
+    Console.WriteLine($"Name: {book.Name}\nAuthor: {book.Author}");
+    if (book.isTaken == true)
+        Console.WriteLine($"In stock\n\n");
+    else
+        Console.WriteLine($"Out stock\n\n");
+}
+
+
+public interface ILibrary
+{
+    List<Book> GetBook();
+}
+
+public class Library : ILibrary
+{
+    ILibrary? _book = null;
+    readonly object _book_lock = new object();
+    protected ILibrary _Book
+    {
+        get
+        {
+            lock (_book_lock)
+            {
+                if (_book == null)
+                    _book = new Book();
+                return _book;
+            }
+        }
+    }
+
+    public List<Book> GetBook() => _Book.GetBook();
+}
+
+public class Book : ILibrary
+{
+    public int? ID { get; set; }
+    public string? Name { get; set; }
+    public string? Author { get; set; }
+
+    public bool isTaken { get; set; }
+
+
+    public List<Book> GetBook()
+    {
+        return new List<Book>()
+        {
+            new Book()
+            {
+                ID = 01,
+                Name = "The Hound of the Baskervilles",
+                Author = "Arthur Conan Doyle",
+                isTaken = true
+            },
+            new Book()
+            {
+                ID = 02,
+                Name = "The Murder on the Links",
+                Author = "Agatha Christie",
+                isTaken = false
+            },
+            new Book()
+            {
+                ID = 03,
+                Name = "Raven",
+                Author = "Edgar Allan Poe",
+                isTaken = false
+            },
+            new Book()
+            {
+                ID = 04,
+                Name = "Still Life",
+                Author = "Louise Penny",
+                isTaken = true
+            },
+             new Book()
+            {
+                ID = 05,
+                Name = "Anatomy of a Murder",
+                Author = "Robert Traver",
+                isTaken = false
+            }
+        };
+    }
+}
