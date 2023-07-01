@@ -1,0 +1,96 @@
+class Program
+{
+    static void Main(string[] args)
+    {
+        BeverageFactory regBeverageFactory = new RegularBeverageFactory();
+
+       Coffee regCoffee = regBeverageFactory.MakeCoffee();
+        regCoffee.GetDetails();
+
+        Cocktail regCocktail = regBeverageFactory.MakeCocktail();
+        regCocktail.GetDetails();
+  
+       BeverageFactory alcBeverageFactory = new AlcocholicBeveragefactory();
+      
+        Coffee alcCoffee = alcBeverageFactory.MakeCoffee();
+        alcCoffee.GetDetails();
+   
+        Cocktail alcCocktail = alcBeverageFactory.MakeCocktail();
+        alcCocktail.GetDetails();
+
+        Console.ReadKey();
+    }
+}
+
+
+public abstract class Coffee
+{   
+    public abstract void GetDetails();
+}
+
+public abstract class Cocktail
+{
+    public abstract void GetDetails();
+}
+public abstract class BeverageFactory
+    {
+
+    public abstract Coffee MakeCoffee();
+    public abstract Cocktail MakeCocktail();
+   
+    }
+
+public class RegularCoffee: Coffee
+{
+    public override void GetDetails()
+   
+    {
+        Console.WriteLine("Created a regular coffee");
+    }
+}
+public class RegularCocktail : Cocktail
+{
+    public override void GetDetails()
+    {
+        Console.WriteLine("Created a regular cocktail");
+    }
+}
+public class AlcocholicCoffee :Coffee
+{
+    public override void GetDetails()
+    {
+        Console.WriteLine("Created an alcocholic coffee");
+    }
+}
+public class AlcocholicCocktail: Cocktail
+{
+    public override void GetDetails()
+    {
+        Console.WriteLine("Created an alcocholic cocktail");
+    }
+}
+
+public class RegularBeverageFactory: BeverageFactory
+{
+    public override Coffee MakeCoffee()
+    {
+        return new RegularCoffee();
+    }
+    public override Cocktail MakeCocktail()
+    {
+        return new RegularCocktail();
+    }
+}
+
+public class AlcocholicBeveragefactory:BeverageFactory
+{
+     public override Coffee MakeCoffee()
+    {
+        return new AlcocholicCoffee();
+    }
+    public override Cocktail MakeCocktail()
+
+    {
+        return new AlcocholicCocktail();
+    }
+}
