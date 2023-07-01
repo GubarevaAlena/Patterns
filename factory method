@@ -1,0 +1,113 @@
+ICoffeeFactory cappucinoFactory = new CappucinoFactory();
+var myCappucino = cappucinoFactory.Create();
+
+ICoffeeFactory mochaFactory = new MochaFactory();
+var myMocha = mochaFactory.Create();
+
+
+Console.Read();
+
+public interface ICoffeeFactory
+{
+    Coffee Create();
+}
+
+
+public class CoffeeParameters
+{
+    public IngredientType IngredientType;
+}
+
+public enum IngredientType
+{
+    MilkFoam,
+    SteamedMilk,
+    Chocolate,
+    Espresso,
+    Water
+}
+
+public class CappucinoFactory : ICoffeeFactory
+{
+    public Coffee Create()
+    {
+        return new Cappucino();
+    }
+}
+
+public class MochaFactory : ICoffeeFactory
+{
+    public Coffee Create()
+    {
+        return new Mocha();
+    }
+}
+
+public class LatteFactory : ICoffeeFactory
+{
+    public Coffee Create()
+    {
+        return new Latte();
+    }
+}
+public class AmericanoFactory : ICoffeeFactory
+{
+    public Coffee Create()
+    {
+        return new Americano();
+    }
+}
+public abstract class Coffee
+{
+    protected IList<CoffeeParameters> Params { get; init; }
+    protected abstract void Prepare();
+
+    public Coffee()
+    {
+        Params = new List<CoffeeParameters>();
+        Prepare();
+    }
+}
+
+public class Cappucino : Coffee
+{
+    protected override void Prepare()
+    {
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.Espresso });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.SteamedMilk });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.MilkFoam });
+        Console.WriteLine("Your cappucino is ready!");
+    }
+}
+
+public class Mocha : Coffee
+{
+    protected override void Prepare()
+    {
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.Espresso });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.Chocolate });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.SteamedMilk });
+        Console.WriteLine("Your mocha is ready!");
+    }
+}
+
+public class Latte : Coffee
+{
+    protected override void Prepare()
+    {
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.Espresso });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.SteamedMilk });
+        Params.Add(new CoffeeParameters { IngredientType = IngredientType.MilkFoam });
+        Console.WriteLine("Your latte is ready!");
+    }
+}
+
+public class Americano : Coffee
+{
+    protected override void Prepare()
+    {
+        Params.Add(new CoffeeParameters {IngredientType = IngredientType.Espresso });
+        Params.Add(new CoffeeParameters {IngredientType = IngredientType.Water });
+        Console.WriteLine("Your americano is ready!");
+    }
+}
