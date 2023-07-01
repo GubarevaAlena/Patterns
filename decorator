@@ -1,0 +1,107 @@
+public interface ICoffee
+{
+    string Description { get; }
+    int CalculatePrice();
+}
+
+public class Latte : ICoffee
+{
+
+    public virtual string Description { get { return "Latte"; } }
+
+    public virtual int CalculatePrice()
+    {
+        return 60;
+    }
+}
+
+public class Cappuccino : ICoffee
+{
+
+    public virtual string Description { get { return "Cappuccino"; } }
+
+    public virtual int CalculatePrice()
+    {
+        return 70;
+    }
+}
+
+public class CoffeeDecorator : ICoffee
+{
+    protected readonly ICoffee coffee;
+
+    public CoffeeDecorator(ICoffee coffee)
+    {
+        this.coffee = coffee;
+    }
+
+    public virtual string Description
+    {
+        get { return this.coffee.Description; }
+    }
+    public virtual int CalculatePrice()
+    {
+        return this.coffee.CalculatePrice();
+    }
+}
+
+
+public class CaramelDecorator : CoffeeDecorator
+{
+    public CaramelDecorator(ICoffee coffee) : base(coffee) { }
+
+    public override string Description
+    {
+        get { return this.coffee.Description + " with caramel"; }
+    }
+
+    public override int CalculatePrice()
+    {
+        return this.coffee.CalculatePrice() + 10;
+    }
+}
+
+public class IceDecorator : CoffeeDecorator
+{
+
+    public IceDecorator(ICoffee coffee) : base(coffee) { }
+
+    public override string Description
+    {
+        get { return this.coffee.Description + " with ice"; }
+    }
+
+    public override int CalculatePrice()
+    {
+        return this.coffee.CalculatePrice();
+    }
+}
+
+
+
+class Program
+{
+    static void Main()
+    {
+        Latte latte = new Latte();
+
+        CaramelDecorator cd = new CaramelDecorator(latte);
+        Console.WriteLine(cd.Description);
+
+        IceDecorator id = new IceDecorator(cd);
+        Console.WriteLine(id.Description);
+        int price = id.CalculatePrice();
+        Console.WriteLine(price);
+
+
+        Cappuccino cappuccino = new Cappuccino();
+
+        IceDecorator id_ = new IceDecorator(cappuccino);
+        Console.WriteLine(id_.Description);
+
+        CaramelDecorator cd_ = new CaramelDecorator(id_);
+        Console.WriteLine(cd_.Description);
+        price = cd_.CalculatePrice();
+        Console.WriteLine(price);
+    }
+}
