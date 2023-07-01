@@ -1,0 +1,106 @@
+class Program
+{
+    public static void Main()
+    {
+        ICoffee latte = new Latte("арабика", "обычное", "большой", new Cherry());
+        ICoffee cappuccino = new Cappuccino("робуста", "коксовое", "средний", new None());
+
+
+        latte.ShowOrder();
+        cappuccino.ShowOrder();
+
+    }
+}
+
+public interface ICoffee
+{
+    public void ShowOrder() { }
+}
+
+public class Coffee
+{
+    protected string beans;
+    protected string milk;
+    protected string size;
+}
+
+public abstract class Syrop
+{
+    protected string flavor;
+
+    public string GetFlavor { get { return flavor; } }
+}
+
+public class Latte: Coffee, ICoffee
+{
+    string name;
+    Syrop syrop;
+
+    public Latte(string beans, string milk, string size, Syrop syrop)
+    {
+        this.name = "Латте";
+        this.beans = beans;
+        this.milk = milk;
+        this.size = size;
+        this.syrop = syrop;
+    }
+
+    public void ShowOrder()
+    {
+        Console.WriteLine($"{size} {name}, на зернах {beans}, {milk} молоко, " +
+                          $"с сиропом {syrop.GetFlavor}");
+    }
+}
+
+public class Cappuccino : Coffee, ICoffee
+{
+    string name;
+    Syrop syrop;
+
+    public Cappuccino(string beans, string milk, string size, Syrop syrop)
+    {
+        this.name = "Капучино";
+        this.beans = beans;
+        this.milk = milk;
+        this.size = size;
+        this.syrop = syrop;
+    }
+
+    public void ShowOrder()
+    {
+        Console.WriteLine($"{size} {name}, на зернах {beans}, {milk} молоко, " +
+                          $"с сиропом {syrop.GetFlavor}");
+    }
+}
+
+public class Cherry : Syrop
+{
+    public Cherry()
+    {
+        this.flavor = "Вишня";
+    }
+}
+
+public class  Almond: Syrop
+{
+    public Almond()
+    {
+        this.flavor = "Миндаль";
+    }
+}
+
+public class  Mint: Syrop
+{
+    public Mint()
+    {
+        this.flavor = "Мята";
+    }
+}
+
+public class None : Syrop
+{
+    public None()
+    {
+        this.flavor = "--";
+    }
+}
