@@ -1,0 +1,73 @@
+using System;
+public abstract class CoffeeTemplate
+{
+    public bool condiments;
+    public string[] condiments_choice = { "caramel", "chocolate", "almond" };
+
+    public void MakeCoffee(bool condiments, int choice = 3)
+    {
+        BrewEspresso();
+        SteamMilk();
+        AddMilkAndFoam();
+        if (condiments)
+        {
+            AddCondiments(condiments_choice[choice]);
+        }
+        Console.WriteLine("The order is ready.");
+    }
+    public abstract void BrewEspresso();
+    public abstract void SteamMilk();
+    public abstract void AddMilkAndFoam();
+    public void AddCondiments(string choice)
+    {
+        Console.WriteLine($"Adding {choice} syrup...");
+    }
+}
+class Latte : CoffeeTemplate
+{
+    public override void BrewEspresso()
+    {
+        Console.WriteLine("Brewing 2 shots of espresso...");
+    }
+    public override void SteamMilk()
+    {
+        Console.WriteLine("Steaming 1/2 cup of milk...");
+    }
+
+    public override void AddMilkAndFoam()
+    {
+        Console.WriteLine("Adding milk and 1/2 inch of foam...");
+    }
+
+
+}
+class Cappuccino : CoffeeTemplate
+{
+    public override void BrewEspresso()
+    {
+        Console.WriteLine("Brewing 1 shot of espresso...");
+    }
+    public override void SteamMilk()
+    {
+        Console.WriteLine("Steaming 1/3 cup of milk...");
+    }
+    public override void AddMilkAndFoam()
+    {
+        Console.WriteLine("Adding milk and 1/3 cup of foam...");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("making a latte\n");
+        CoffeeTemplate coffee = new Latte();
+        coffee.MakeCoffee(false);
+
+        Console.WriteLine("making a cappuccino\n");
+        coffee = new Cappuccino();
+        coffee.MakeCoffee(true, 2);
+        Console.Read();
+    }
+}
