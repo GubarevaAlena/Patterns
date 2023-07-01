@@ -1,0 +1,83 @@
+
+class Employee
+{
+    public string name;
+    public int level;
+
+    public Employee(string name, int level)
+    {
+        this.name = name;
+        this.level = level;
+    }
+}
+
+public interface IClassifiedFile
+{
+    void Access();
+    bool redactable { get; set; }
+
+    int lev { get; set; }
+}
+public class ClassifiedFile : IClassifiedFile
+{
+    public int lev { get; set; }    
+    public bool redactable { get; set; }
+
+    public void Access()
+    {
+        Console.WriteLine($"Needed access level {this.lev}");
+        Console.WriteLine($"Displaying ‘Redact’ button? - {this.redactable}");
+    }
+
+}
+class FileProxy : IClassifiedFile
+{
+    private IClassifiedFile file;
+    private Employee employee;
+    public int lev { get; set; }
+    public bool redactable { get; set; }
+    public FileProxy(Employee emp, IClassifiedFile f)
+    {
+        employee = emp;
+        file = f;
+        lev = f.lev;
+    }
+    public void Access()
+    {
+        if (employee.level > lev) this.file.redactable = true;
+
+        if (employee.level >= lev)
+        {
+            file.Access();
+            Console.WriteLine("Access granted.");
+        }
+        else
+        {
+            Console.WriteLine("Access denied.");
+        }
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        ClassifiedFile file = new ClassifiedFile();
+        file.lev = 3;
+        file.Access();
+
+        Employee emp = new Employee("J", 3);
+        Employee emp2 = new Employee("K", 1);
+        Employee emp3 = new Employee("L", 5);
+
+        FileProxy fileProxy = new FileProxy(emp, file);
+        fileProxy.Access();
+
+        fileProxy = new FileProxy(emp2, file);
+        fileProxy.Access();
+
+        fileProxy = new FileProxy(emp3, file);
+        fileProxy.Access();
+
+
+    }
+}
