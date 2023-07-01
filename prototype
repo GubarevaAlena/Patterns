@@ -1,0 +1,68 @@
+Sheep sheep = new Sheep("Dolly", "Domestic");
+IAnimal? clonedSheep = sheep.Clone();
+sheep.GetInfo();
+clonedSheep.GetInfo();
+
+Console.WriteLine();
+
+sheep.Name = "Original Dolly";
+sheep.GetInfo();
+clonedSheep.GetInfo();
+
+Console.Read();
+
+
+
+public interface IAnimal
+{
+    IAnimal Clone();
+    void GetInfo();
+}
+
+public class Sheep : IAnimal
+{
+    public string Name { get; set; }
+    public string Breed { get; set; }
+    public Sheep(string name, string breed)
+    {
+        Name = name;
+        Breed = breed;
+    }
+
+    public IAnimal Clone()
+    {
+        Console.WriteLine($"{Name} was cloned");
+        return new Sheep(this.Name, this.Breed);
+    }
+
+    public void GetInfo()
+    {
+        Console.WriteLine($"It's little sheep named {Name}!");
+    }
+}
+
+public class Cat : IAnimal
+{
+    public string Name { get; set; }
+    public string Breed { get; set; }
+    public Cat(string name, string breed)
+    {
+        Name = name;
+        Breed = breed;
+    }
+
+    public IAnimal Clone()
+    {
+        return new Cat(this.Name, this.Breed);
+    }
+
+    public IAnimal? MemClone()
+    {
+        return this.MemberwiseClone() as IAnimal;
+    }
+
+    public void GetInfo()
+    {
+        Console.WriteLine($"It's little {Breed} sheep named {Name}!");
+    }
+}
