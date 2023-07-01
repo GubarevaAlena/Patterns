@@ -1,0 +1,124 @@
+
+using System.Collections.Concurrent;
+
+class Program
+{
+    public interface IPoolable
+    {
+        void ResetState();
+    }
+    public interface IPoolObjectCreator<T>
+    {
+        T Create();
+    }
+    public class DefaultObjectCreator<T> : IPoolObjectCreator<T> where T : class, new()
+    {
+        T IPoolObjectCreator<T>.Create()
+        {
+            return new T();
+        }
+    }
+    public class ObjectPool<T> where T : class, IPoolable
+    {
+        private readonly ConcurrentBag<T> _container = new ConcurrentBag<T>();
+
+        private readonly IPoolObjectCreator<T> _objectCreator;
+
+        public readonly int maxcount = 10;
+        public int Count { get { return this._container.Count; } }
+        public ObjectPool(IPoolObjectCreator<T> creator)
+        {
+            if (creator == null)
+            {
+                throw new ArgumentNullException("creator can't be null");
+            }
+
+            this._objectCreator = creator;
+        }
+        public T GetObject()
+        {
+            T obj;
+
+
+            if (this._container.TryTake(out obj))
+            {
+                return obj;
+            }
+            if (this.Count < maxcount)
+            { return this._objectCreator.Create(); }
+            return null;
+        }
+        public void ReturnObject(ref T obj)
+        {
+            obj.ResetState();
+            this._container.Add(obj);
+            obj = null;
+        }
+    }
+
+    public class Chest : IPoolable
+    {
+        public bool HasLoot;
+        public static int count = 0;
+
+        public Chest()
+        {
+            Console.WriteLine("Chest spawned");
+            this.HasLoot = true;
+            count++;
+        }
+
+        void IPoolable.ResetState()
+        {
+            this.HasLoot = true;
+        }
+    }
+    public class Player
+    {
+        public bool FoundChest;
+        Random rnd = new Random();
+
+        public void PlayerAction()
+        {
+            int chance = rnd.Next(0, 100);
+            if (chance <= 25)
+            {
+                this.FoundChest = true;
+                Console.WriteLine("Player found chest");
+            }
+        }
+    }
+
+    public static void Game(ObjectPool<Chest> pool, Player player)
+    {
+
+        for (int i = 0; i < 100; i++)
+        {
+            Console.WriteLine($"There are {Chest.count} chests on the map");
+            Console.WriteLine($"There are {pool.Count} chests in the pool");
+            Thread.Sleep(500);
+            if (i % 2 == 0)
+            {
+                Chest chest = pool.GetObject();
+                player.PlayerAction();
+                if (player.FoundChest == true)
+                {
+                    chest.HasLoot = false;
+                    player.FoundChest = false;
+                    pool.ReturnObject(ref chest);
+                }
+                if (Chest.count >= pool.maxcount)
+                    pool.ReturnObject(ref chest);
+
+            }
+        }
+        Console.ReadKey();
+    }
+    static void Main()
+    {
+        var pool = new ObjectPool<Chest>(new DefaultObjectCreator<Chest>());
+        Player player = new Player();
+        Game(pool, player);
+        Console.ReadKey();
+    }
+}
