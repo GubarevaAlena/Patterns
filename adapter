@@ -1,242 +1,166 @@
-Server server = new Server();
+//без адаптера
+Dough unknown = new Dough("Puff");
+unknown.LoadData("Puff");
 
-Console.WriteLine("Hello! Welcome to our C#afe. What is your name?");
-var name = Console.ReadLine();
+Console.WriteLine();
 
-Сustomer customer = new (name);
+//с адаптером
+DoughDetails puff = new("Puff");
+puff.LoadData("Puff");
 
-Console.WriteLine("\nHello " + customer.GetName + ". What coffee would you like? (1-5):\n" +
-    "1. Espresso\n2. Americano\n3. Latte\n" +
-    "4. Cappuccino\n5. Flat white");
-var cofID = int.Parse(Console.ReadLine());
+Console.WriteLine();
 
-Console.WriteLine("\nGood.  Would you like some tea? (1-5):\n" +
-    "1. Black\n2. Green\n3. White\n" +
-    "4. Jasmine\n5. Matcha");
-var teaID = int.Parse(Console.ReadLine());
-
-Console.WriteLine("\nGreat!  Finally, what do you think about some lemonade? (1-5):\n" +
-    "1. Citrus\n2. Strawberry\n3. Cherry\n" +
-    "4. Mint\n5. Fruit");
-var lemID = int.Parse(Console.ReadLine());
-
-Console.WriteLine("\nI'll get that order in right away.");
-
-server.PlaceOrder(customer, cofID, teaID, lemID);
+DoughDetails shortbread = new("Shortbread");
+shortbread.LoadData("Shortbread");
 
 Console.ReadKey();
 
 
-class Drink 
-{ 
-    public int DrinkID;
-    public Drink(int drinkID)
-    {
-        DrinkID = drinkID;
-    }
+
+
+interface ILoadData
+{
+    void LoadData(string doughName);
 }
 
-
-interface IDrinkMaker
+public enum TemperatureType
 {
-    Drink PrepDrink(int DishID);
+    Fahrenheit,
+    Celsius
 }
 
-class Order
+class DoughDatabase
 {
-    public Drink Coffee { get; set; }
-    public Drink Tea { get; set; }
-    public Drink Lemonade { get; set; }
-}
-
-class Сustomer
-{
-    private string Name;
-
-    public Сustomer(string name)
+    public int GetRightCookTemp(string dough, TemperatureType tempType)
     {
-        Name = name;
-    }
-
-    public string GetName
-    {
-        get { return Name; }
-    }
-}
-
-
-class CoffeMaker : IDrinkMaker
-{
-    private string CoffeeName;
-    public Drink PrepDrink(int drinkID)
-    {
-        switch (drinkID)
+        if (tempType == TemperatureType.Celsius)
         {
-            case 1:
-                {
-                    CoffeeName = "espresso";
-                    break;
-                }
-            case 2:
-                {
-                    CoffeeName = "americano";
-                    break;
-                }
-            case 3:
-                {
-                    CoffeeName = "latte";
-                    break;
-                }
-            case 4:
-                {
-                    CoffeeName = "cappuccino";
-                    break;
-                }
-            case 5:
-                {
-                    CoffeeName = "flat white";
-                    break;
-                }
-            default:
-                {
-                    drinkID = 0;
-                    break;
-                }
+            switch (dough.ToLower())
+            {
+                case "puff":           //слоёное
+                    return 230;
+                case "biscuit":        //бисквитное
+                    return 210;
+                case "shortbread":     //песочное
+                    return 240;
+                case "choux":          //заварное
+                    return 190;
+                case "gingerbread":    //пряничное
+                    return 200;
+                case "nut":            //ореховое
+                    return 160;
+
+                default:
+                    return 0;
+            }
         }
-        if (drinkID != 0)
-            Console.WriteLine($"Barista is making your {CoffeeName}");
         else
-            Console.WriteLine($"Coffee wasn't in order");
-
-        //приготовление кофе
-        return new Drink(drinkID)
         {
-            DrinkID = drinkID
-        };
-    }
-}
+            switch (dough.ToLower())
+            {
+                case "puff":
+                    return 446;
+                case "biscuit":
+                    return 410;
+                case "shortbread":
+                    return 464;
+                case "choux":
+                    return 374;
+                case "gingerbread":
+                    return 392;
+                case "nut":
+                    return 320;
 
-
-class TeaMaker : IDrinkMaker
-{
-    private string TeaName;
-    public Drink PrepDrink(int drinkID)
-    {
-        switch (drinkID)
-        {
-            case 1:
-                {
-                    TeaName = "black";
-                    break;
-                }
-            case 2:
-                {
-                    TeaName = "green";
-                    break;
-                }
-            case 3:
-                {
-                    TeaName = "white";
-                    break;
-                }
-            case 4:
-                {
-                    TeaName = "jasmine";
-                    break;
-                }
-            case 5:
-                {
-                    TeaName = "matcha";
-                    break;
-                }
-            default:
-                {
-                    drinkID = 0;
-                    break;
-                }
-
+                default:
+                    return 0;
+            }
         }
-        if (drinkID != 0)
-            Console.WriteLine($"Preparing {TeaName} tea, it will be ready soon");
-        else
-            Console.WriteLine($"Tea wasn't in order");
-        return new Drink(drinkID)
-        {
-            DrinkID = drinkID
-        };
     }
-}
 
-
-class LemonadeMaker : IDrinkMaker
-{
-    private string LemonadeName; 
-    public Drink PrepDrink(int drinkID)
+    public int GetTime(string dough)
     {
-        switch (drinkID)
+        switch (dough.ToLower())
         {
-            case 1:
-                {
-                    LemonadeName = "citrus";
-                    break;
-                }
-            case 2:
-                {
-                    LemonadeName = "strawberry";
-                    break;
-                }
-            case 3:
-                {
-                    LemonadeName = "cherry";
-                    break;
-                }
-            case 4:
-                {
-                    LemonadeName = "mint";
-                    break;
-                }
-            case 5:
-                {
-                    LemonadeName = "fruit";
-                    break;
-                }
-            default:
-                {
-                    drinkID = 0;
-                    break;
-                }
+            case "puff":
+                return 25;
+            case "biscuit":
+                return 50;
+            case "shortbread":
+                return 15;
+            case "choux":
+                return 30;
+            case "gingerbread":
+                return 35;
+            case "nut":
+                return 20;
+
+            default: return 0;
         }
-        if (drinkID != 0)
-            Console.WriteLine($"The bar is preparing your {LemonadeName} lemonade");
-        else
-            Console.WriteLine($"Lemonade wasn't in order");
+    }
 
-        return new Drink(drinkID)
+    public string GetPastry(string dough)
+    {
+        switch (dough.ToLower())
         {
-            DrinkID = drinkID
-        };
+            case "puff":
+                return "Puffs, croissants, strudel";
+            case "biscuit":
+                return "Biscuit, sponge cake, roll";
+            case "shortbread":
+                return "Cookies, pie crust";
+            case "choux":
+                return "Eclair, profiteroles, churros";
+            case "gingerbread":
+                return "Parliament cake, gingerbread";
+            case "nut":
+                return "Fruit tarts, galettes.";
+
+            default: return "";
+        }
     }
 }
 
-
-class Server
+class Dough : ILoadData
 {
-    private CoffeMaker coffee = new();
-    private TeaMaker tea = new();
-    private LemonadeMaker lemonade = new();
+    private string DoughName;
+    
 
-    public Order PlaceOrder(Сustomer customer, int cofID, int teaID, int lemID)
+    public Dough(string dough)
     {
-        Console.WriteLine($"Order for coffee № {cofID.ToString()}, " +
-                          $"hot tea № {teaID.ToString()} " +
-                          $"and lemonade № {lemID.ToString()} for {customer.GetName}\n");
+        this.DoughName = dough;
+    }
 
-        Order order = new Order();
+    public void LoadData(string doughName)
+    {
+        Console.WriteLine($"Dough: {DoughName}");
+    }
+}
 
-        order.Coffee = coffee.PrepDrink(cofID);
-        order.Tea = tea.PrepDrink(teaID);
-        order.Lemonade = lemonade.PrepDrink(lemID);
+class DoughDetails : ILoadData
+{
+    private DoughDatabase _doughDatabase;
+    private int RightTempFahrenheit;
+    private int RightTempCelsius;
+    private int Time;
+    private string RecommendedPastry;
 
-        return order;
+    public DoughDetails(string name)
+    {
+    }
+
+    public void LoadData(string doughName)
+    {
+        _doughDatabase = new DoughDatabase();
+
+        RightTempFahrenheit = _doughDatabase.GetRightCookTemp(doughName, TemperatureType.Fahrenheit);
+        RightTempCelsius = _doughDatabase.GetRightCookTemp(doughName, TemperatureType.Celsius);
+        Time = _doughDatabase.GetTime(doughName);
+        RecommendedPastry = _doughDatabase.GetPastry(doughName);
+
+        Console.WriteLine($"Dough: {doughName}");
+        Console.WriteLine($" Baking temperature (F): {RightTempFahrenheit}");
+        Console.WriteLine($" Baking temperature (C): {RightTempCelsius}");
+        Console.WriteLine($" Recommended time: {Time} min");
+        Console.WriteLine($" Recommended pastry: {RecommendedPastry}");
     }
 }
