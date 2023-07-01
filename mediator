@@ -1,0 +1,89 @@
+Customer customer = new();
+Kitchen kitchen = new();
+Bar bar = new();
+new Waiter(customer, kitchen, bar);
+
+Console.WriteLine("Waiter takes order from customer \n");
+customer.MakeOrder();
+
+
+public interface IMediator
+{
+    void Notify(object sender, string msg);
+}
+
+public class Waiter : IMediator
+{
+    private Customer _customer;
+    private Kitchen _kitchen;
+    private Bar _bar;
+
+    public Waiter(Customer customer, Kitchen kitchen, Bar bar)
+    {
+        _customer = customer;
+        _kitchen = kitchen;
+        _bar = bar;
+        _customer.SetMediator(this);
+        _kitchen.SetMediator(this);
+        _bar.SetMediator(this);
+    }
+
+    public void Notify(object sender, string msg)
+    {
+        switch(msg)
+        {
+            case "Order":
+                Console.WriteLine("Waiter took order and gave order to kitchen");
+                _kitchen.MakeFood();
+                break;
+            case "Food":
+                Console.WriteLine("Waiter took ready food and went to bar");
+                _bar.MakeDrink();
+                break;
+            case "Drink":
+                Console.WriteLine("Waiter took drinks and went to customer");
+                break;
+        }
+    }
+}
+
+public class Base
+{
+    protected IMediator _mediator;
+    public Base(IMediator m = null)
+    {
+        _mediator = m;
+    }
+
+    public void SetMediator(IMediator m)
+    {
+        _mediator = m;
+    }
+}
+
+public class Customer  : Base
+{
+    public void MakeOrder()
+    {
+        Console.WriteLine("Customer made order");
+        this._mediator.Notify(this, "Order");
+    }
+}
+
+public class Kitchen : Base
+{
+    public void MakeFood()
+    {
+        Console.WriteLine("Kitchen made food");
+        this._mediator.Notify(this, "Food");
+    }
+}
+
+public class Bar : Base
+{
+    public void MakeDrink()
+    {
+        Console.WriteLine("Bar made drink");
+        this._mediator.Notify(this, "Drink");
+    }
+}
