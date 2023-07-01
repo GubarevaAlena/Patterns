@@ -1,0 +1,108 @@
+public interface IObservable
+{
+
+    void AddClient(IObserver observer);
+
+    void RemoveClient(IObserver observer);
+
+    void NotifyCLients();
+}
+public interface IObserver
+{
+    void Update(string availability);
+}
+
+public class Product : IObservable
+{
+    private List<IObserver> observers = new List<IObserver>();
+    private string CoffeeName { get; set; }
+    private string Availability { get; set; }
+    public Product(string coffeeName, string availability)
+    {
+        CoffeeName = coffeeName;
+        Availability = availability;
+    }
+    public string GetAvailability()
+    {
+        return Availability;
+    }
+    public void SetAvailability(string availability)
+    {
+        this.Availability = availability;
+        Console.WriteLine("Availability changed. Now the product is available.");
+        NotifyCLients();
+    }
+
+    public void AddClient(IObserver observer)
+    {
+        Console.WriteLine("New client added : " + ((Observer)observer).UserName);
+        observers.Add(observer);
+    }
+
+    public void RemoveClient(IObserver observer)
+    {
+        Console.WriteLine("Client removed : " + ((Observer)observer).UserName);
+        observers.Remove(observer);
+    }
+    public void NotifyCLients()
+    {
+        Console.WriteLine($"Coffee {CoffeeName} is now in stock. Notifying users");
+        Console.WriteLine();
+        foreach (IObserver observer in observers)
+        {
+            observer.Update(Availability);
+        }
+    }
+}
+public class Observer : IObserver
+{
+    public string UserName { get; set; }
+
+    public Observer(string userName)
+    {
+        UserName = userName;
+    }
+
+    public void AddSubscriber(IObservable product)
+    {
+        product.AddClient(this);
+    }
+
+    public void RemoveSubscriber(IObservable product)
+    {
+        product.RemoveClient(this);
+    }
+
+    public void Update(string availability)
+    {
+        Console.WriteLine($"Hello {UserName}. The product current state is {availability}. Don't miss the opportunity to buy our delicious coffee.");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Product Mocka = new Product("Mocka", "Out of stock");
+
+        Observer user1 = new Observer("Petr");
+        user1.AddSubscriber(Mocka);
+
+        Observer user2 = new Observer("Anna");
+        user2.AddSubscriber(Mocka);
+
+        Observer user3 = new Observer("Katerine");
+        user3.AddSubscriber(Mocka);
+
+        Observer user4 = new Observer("Andrey");
+        user4.AddSubscriber(Mocka);
+
+        Console.WriteLine("Coffee Mocka current state : " + Mocka.GetAvailability());
+        Console.WriteLine();
+
+        user4.RemoveSubscriber(Mocka);
+
+        Mocka.SetAvailability("available");
+        Console.Read();
+    }
+}
