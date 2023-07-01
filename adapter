@@ -1,0 +1,242 @@
+Server server = new Server();
+
+Console.WriteLine("Hello! Welcome to our C#afe. What is your name?");
+var name = Console.ReadLine();
+
+Сustomer customer = new (name);
+
+Console.WriteLine("\nHello " + customer.GetName + ". What coffee would you like? (1-5):\n" +
+    "1. Espresso\n2. Americano\n3. Latte\n" +
+    "4. Cappuccino\n5. Flat white");
+var cofID = int.Parse(Console.ReadLine());
+
+Console.WriteLine("\nGood.  Would you like some tea? (1-5):\n" +
+    "1. Black\n2. Green\n3. White\n" +
+    "4. Jasmine\n5. Matcha");
+var teaID = int.Parse(Console.ReadLine());
+
+Console.WriteLine("\nGreat!  Finally, what do you think about some lemonade? (1-5):\n" +
+    "1. Citrus\n2. Strawberry\n3. Cherry\n" +
+    "4. Mint\n5. Fruit");
+var lemID = int.Parse(Console.ReadLine());
+
+Console.WriteLine("\nI'll get that order in right away.");
+
+server.PlaceOrder(customer, cofID, teaID, lemID);
+
+Console.ReadKey();
+
+
+class Drink 
+{ 
+    public int DrinkID;
+    public Drink(int drinkID)
+    {
+        DrinkID = drinkID;
+    }
+}
+
+
+interface IDrinkMaker
+{
+    Drink PrepDrink(int DishID);
+}
+
+class Order
+{
+    public Drink Coffee { get; set; }
+    public Drink Tea { get; set; }
+    public Drink Lemonade { get; set; }
+}
+
+class Сustomer
+{
+    private string Name;
+
+    public Сustomer(string name)
+    {
+        Name = name;
+    }
+
+    public string GetName
+    {
+        get { return Name; }
+    }
+}
+
+
+class CoffeMaker : IDrinkMaker
+{
+    private string CoffeeName;
+    public Drink PrepDrink(int drinkID)
+    {
+        switch (drinkID)
+        {
+            case 1:
+                {
+                    CoffeeName = "espresso";
+                    break;
+                }
+            case 2:
+                {
+                    CoffeeName = "americano";
+                    break;
+                }
+            case 3:
+                {
+                    CoffeeName = "latte";
+                    break;
+                }
+            case 4:
+                {
+                    CoffeeName = "cappuccino";
+                    break;
+                }
+            case 5:
+                {
+                    CoffeeName = "flat white";
+                    break;
+                }
+            default:
+                {
+                    drinkID = 0;
+                    break;
+                }
+        }
+        if (drinkID != 0)
+            Console.WriteLine($"Barista is making your {CoffeeName}");
+        else
+            Console.WriteLine($"Coffee wasn't in order");
+
+        //приготовление кофе
+        return new Drink(drinkID)
+        {
+            DrinkID = drinkID
+        };
+    }
+}
+
+
+class TeaMaker : IDrinkMaker
+{
+    private string TeaName;
+    public Drink PrepDrink(int drinkID)
+    {
+        switch (drinkID)
+        {
+            case 1:
+                {
+                    TeaName = "black";
+                    break;
+                }
+            case 2:
+                {
+                    TeaName = "green";
+                    break;
+                }
+            case 3:
+                {
+                    TeaName = "white";
+                    break;
+                }
+            case 4:
+                {
+                    TeaName = "jasmine";
+                    break;
+                }
+            case 5:
+                {
+                    TeaName = "matcha";
+                    break;
+                }
+            default:
+                {
+                    drinkID = 0;
+                    break;
+                }
+
+        }
+        if (drinkID != 0)
+            Console.WriteLine($"Preparing {TeaName} tea, it will be ready soon");
+        else
+            Console.WriteLine($"Tea wasn't in order");
+        return new Drink(drinkID)
+        {
+            DrinkID = drinkID
+        };
+    }
+}
+
+
+class LemonadeMaker : IDrinkMaker
+{
+    private string LemonadeName; 
+    public Drink PrepDrink(int drinkID)
+    {
+        switch (drinkID)
+        {
+            case 1:
+                {
+                    LemonadeName = "citrus";
+                    break;
+                }
+            case 2:
+                {
+                    LemonadeName = "strawberry";
+                    break;
+                }
+            case 3:
+                {
+                    LemonadeName = "cherry";
+                    break;
+                }
+            case 4:
+                {
+                    LemonadeName = "mint";
+                    break;
+                }
+            case 5:
+                {
+                    LemonadeName = "fruit";
+                    break;
+                }
+            default:
+                {
+                    drinkID = 0;
+                    break;
+                }
+        }
+        if (drinkID != 0)
+            Console.WriteLine($"The bar is preparing your {LemonadeName} lemonade");
+        else
+            Console.WriteLine($"Lemonade wasn't in order");
+
+        return new Drink(drinkID)
+        {
+            DrinkID = drinkID
+        };
+    }
+}
+
+
+class Server
+{
+    private CoffeMaker coffee = new();
+    private TeaMaker tea = new();
+    private LemonadeMaker lemonade = new();
+
+    public Order PlaceOrder(Сustomer customer, int cofID, int teaID, int lemID)
+    {
+        Console.WriteLine($"Order for coffee № {cofID.ToString()}, " +
+                          $"hot tea № {teaID.ToString()} " +
+                          $"and lemonade № {lemID.ToString()} for {customer.GetName}\n");
+
+        Order order = new Order();
+
+        order.Coffee = coffee.PrepDrink(cofID);
+        order.Tea = tea.PrepDrink(teaID);
+        order.Lemonade = lemonade.PrepDrink(lemID);
+
+        return order;
+    }
+}
