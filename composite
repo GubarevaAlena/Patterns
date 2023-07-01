@@ -1,0 +1,75 @@
+public interface IFile
+{
+    string Name { get; }
+    int GetSize();
+}
+public class File : IFile
+{
+    public int Size { get; }
+    public string Name { get; }
+    public File(string name, int size)
+    {
+        this.Name = name;
+        this.Size = size;
+
+    }
+    public int GetSize()
+    {
+        return Size;
+    }
+
+}
+class Folder : IFile
+{
+    public List<IFile> Files { get; }
+    public string Name { get; }
+    public Folder(string name)
+    {
+        Files = new List<IFile>();
+        this.Name = name;
+    }
+
+    public void Add(IFile file)
+    {
+        Files.Add(file);
+    }
+    public void Remove(IFile file)
+    {
+        Files.Remove(file);
+    }
+
+    public int GetSize()
+    {
+        return Files.Sum(x => x.GetSize());
+    }
+
+    public void ShowContents()
+    {
+        foreach (IFile file in Files)
+            Console.WriteLine(file.Name);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Folder F1 = new Folder("Folder1");
+        File file1 = new File("file1", 100);
+        Folder F2 = new Folder("Folder2");
+        File file2 = new File("file2", 112);
+        File file3 = new File("file3", 76);
+
+        F1.Add(file1);
+        F1.Add(F2);
+        F2.Add(file3);
+        F2.Add(file2);
+
+        Console.WriteLine($"Folder1 size:{F1.GetSize()} Kb \nContents:");
+        F1.ShowContents();
+        Console.WriteLine($"Folder2 size:{F2.GetSize()} Kb \nContents:");
+        F2.ShowContents();
+        Console.WriteLine($"file3 size: {file3.GetSize()} Kb");
+
+    }
+}
